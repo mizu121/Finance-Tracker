@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Smart Financial Freedom Tracker</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNtYXJ0IEZpbmFuY2lhbCBGcmVlZG9tIFRyYWNrZXIiLAogICJzaG9ydF9uYW1lIjogIlNtYXJ0RmluVHJhY2tlciIsCiAgImRlc2NyaXB0aW9uIjogIkFJLXBvd2VyZWQgcGVyc29uYWwgZmluYW5jZSB0cmFja2VyIHdpdGggc21hcnQgbm90aWZpY2F0aW9ucyIsCiAgInN0YXJ0X3VybCI6ICIvIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiIzNCODJGNiIsCiAgIm9yaWVudGF0aW9uIjogInBvcnRyYWl0IiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFMQUFBQUF3Q0FZQUFBQ0I2V0o4QUFBQUJ3a2xFUVZSWUNlMVpRWGNjTXVYQTJSZDc5OWZiWEo0aWtBOEsrRjNCQWtocGZHZ051ektKSTJFZGhYaDhCQWdnelNMU01sVHpKRklCL3BhNDBJME5lWHl6WVpyRWFVNGRDYWFyQUNEQVZMYjFHakJNUHdyY1BLQ0FESDJnZGNHTER0cGZpN3lsaEhMZXJ5cEFhWXhKaDhrcUYyV1pqQXJEUzRIZFl1bGJaOEdUbHNNRW5CTEV5OUFBOTVBcjBiSERTWWs5ZGs2bk5aMk5HWTRPaXQ5eWZ3NExTdERkcEFrRUlONE5mVEh1aEtoc3poQTEzZEc5dUJaUkUvbW5aWkR1SVJ5dGpHM2t5UVlKUkJ4NTFNODRwczFrbEU0YUl0d2lWSENaR1BISUtKRExnVWdtMXQ2VllHQTQyenNqTkthVk5KRy94Z2hnUzlwMEYyVGsrVFZkZjdSNE1wMURPOXAwRXU3UUFBQUFCSlJVNUVya0pnZ2c9PSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
+    <meta name="theme-color" content="#3B82F6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FinTracker">
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        body { 
+            margin: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #f8fafc, #e2e8f0);
+            overscroll-behavior: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #root {
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .mobile-container {
+            padding: 8px;
+            max-width: 100vw;
+            box-sizing: border-box;
+        }
+        
+        .notification-banner {
+            position: fixed;
+            top: env(safe-area-inset-top, 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease-out;
+            max-width: calc(100vw - 32px);
+            font-size: 14px;
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+        
+        .btn {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+        }
+        
+        .budget-card {
+            border-radius: 12px;
+            padding: 16px;
+            background: white;
+            border: 2px solid;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-fallback {
+            background: #FEF3C7;
+            border: 1px solid #F59E0B;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            color: #92400E;
+            font-size: 14px;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .mobile-input-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .text-5xl { font-size: 2rem; }
+            .text-4xl { font-size: 1.75rem; }
+            .text-3xl { font-size: 1.5rem; }
+            .text-2xl { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Enhanced data persistence with better error handling
+        const DataManager = {
+            save: (key, data) => {
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                    return true;
+                } catch (error) {
+                    console.error('Failed to save data:', error);
+                    return false;
+                }
+            },
+            
+            load: (key, defaultValue = null) => {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : defaultValue;
+                } catch (error) {
+                    console.error('Failed to load data:', error);
+                    return defaultValue;
+                }
+            },
+            
+            remove: (key) => {
+                try {
+                    localStorage.removeItem(key);
+                    return true;
+                } catch (error) {
+                    console.error('Failed to remove data:', error);
+                    return false;
+                }
+            }
+        };
+
+        // User management system
+        const UserManager = {
+            register: (username, password) => {
+                const users = DataManager.load('users', {});
+                if (users[username]) {
+                    return { success: false, message: 'Username already exists' };
+                }
+                
+                users[username] = {
+                    password: btoa(password), // Simple encoding
+                    createdAt: new Date().toISOString(),
+                    resetCode: Math.random().toString(36).substr(2, 8)
+                };
+                
+                DataManager.save('users', users);
+                return { 
+                    success: true, 
+                    message: 'Account created successfully',
+                    resetCode: users[username].resetCode
+                };
+            },
+            
+            login: (username, password) => {
+                const users = DataManager.load('users', {});
+                const user = users[username];
+                
+                if (!user || user.password !== btoa(password)) {
+                    return { success: false, message: 'Invalid username or password' };
+                }
+                
+                DataManager.save('currentUser', username);
+                return { success: true, message: 'Login successful' };
+            },
+            
+            resetAccount: (username, resetCode, newPassword) => {
+                const users = DataManager.load('users', {});
+                const user = users[username];
+                
+                if (!user || user.resetCode !== resetCode) {
+                    return { success: false, message: 'Invalid username or reset code' };
+                }
+                
+                // Reset user data
+                user.password = btoa(newPassword);
+                user.resetCode = Math.random().toString(36).substr(2, 8);
+                DataManager.save('users', users);
+                
+                // Clear all user data
+                const currentUser = DataManager.load('currentUser');
+                if (currentUser === username) {
+                    DataManager.remove(`transactions_${username}`);
+                    DataManager.remove(`spent_${username}`);
+                    DataManager.remove(`debtCycleData_${username}`);
+                    DataManager.remove(`currentBalance_${username}`);
+                }
+                
+                return { 
+                    success: true, 
+                    message: 'Account reset successfully',
+                    newResetCode: user.resetCode
+                };
+            },
+            
+            getCurrentUser: () => {
+                return DataManager.load('currentUser');
+            },
+            
+            logout: () => {
+                DataManager.remove('currentUser');
+            }
+        };
+
+        // Enhanced notification service with fallbacks
+        class SmartNotificationService {
+            constructor() {
+                this.isSupported = 'Notification' in window;
+                this.permission = this.isSupported ? Notification.permission : 'denied';
+                this.fallbackContainer = null;
+            }
+
+            async requestPermission() {
+                if (!this.isSupported) {
+                    this.setupFallback();
+                    return false;
+                }
+                
+                try {
+                    const permission = await Notification.requestPermission();
+                    this.permission = permission;
+                    return permission === 'granted';
+                } catch (error) {
+                    console.error('Notification permission error:', error);
+                    this.setupFallback();
+                    return false;
+                }
+            }
+
+            setupFallback() {
+                // Create fallback notification system for older devices
+                if (!this.fallbackContainer) {
+                    this.fallbackContainer = document.createElement('div');
+                    this.fallbackContainer.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 10000;
+                        max-width: 300px;
+                    `;
+                    document.body.appendChild(this.fallbackContainer);
+                }
+            }
+
+            showNotification(message, type = 'general') {
+                if (this.permission === 'granted' && this.isSupported) {
+                    try {
+                        const icons = {
+                            budget: '💰',
+                            debt: '💳',
+                            spending: '🛒',
+                            daily: '📅',
+                            weekly: '📊',
+                            general: '🔔'
+                        };
+                        
+                        new Notification(`${icons[type]} Financial Tracker`, {
+                            body: message,
+                            icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+                            tag: type,
+                            requireInteraction: type === 'debt' || type === 'budget'
+                        });
+                    } catch (error) {
+                        this.showFallbackNotification(message, type);
+                    }
+                } else {
+                    this.showFallbackNotification(message, type);
+                }
+            }
+
+            showFallbackNotification(message, type) {
+                if (!this.fallbackContainer) this.setupFallback();
+                
+                const notification = document.createElement('div');
+                notification.className = 'notification-fallback';
+                notification.innerHTML = `
+                    <div style="font-weight: bold; margin-bottom: 4px;">📱 ${type.toUpperCase()}</div>
+                    <div>${message}</div>
+                `;
+                
+                this.fallbackContainer.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 5000);
+            }
+        }
+
+        const LoginScreen = ({ onLogin }) => {
+            const [mode, setMode] = useState('login'); // 'login', 'register', 'reset'
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [resetCode, setResetCode] = useState('');
+            const [message, setMessage] = useState('');
+            const [userResetCode, setUserResetCode] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setMessage('');
+
+                if (mode === 'login') {
+                    const result = UserManager.login(username, password);
+                    setMessage(result.message);
+                    if (result.success) {
+                        onLogin(username);
+                    }
+                } else if (mode === 'register') {
+                    if (password.length < 4) {
+                        setMessage('Password must be at least 4 characters');
+                        return;
+                    }
+                    const result = UserManager.register(username, password);
+                    setMessage(result.message);
+                    if (result.success) {
+                        setUserResetCode(result.resetCode);
+                        setMessage(`Account created! Your reset code is: ${result.resetCode} (save this!)`);
+                    }
+                } else if (mode === 'reset') {
+                    if (password.length < 4) {
+                        setMessage('New password must be at least 4 characters');
+                        return;
+                    }
+                    const result = UserManager.resetAccount(username, resetCode, password);
+                    setMessage(result.message);
+                    if (result.success) {
+                        setUserResetCode(result.newResetCode);
+                        setMessage(`Account reset! New reset code: ${result.newResetCode} (save this!)`);
+                        setMode('login');
+                    }
+                }
+            };
+
+            return (
+                <div className="login-container">
+                    <div style={{background: 'white', borderRadius: '16px', padding: '24px', width: '100%', maxWidth: '400px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)'}}>
+                        <div style={{textAlign: 'center', marginBottom: '24px'}}>
+                            <h1 style={{fontSize: '28px', fontWeight: 'bold', color: '#1D4ED8', marginBottom: '8px'}}>
+                                💰 Smart FinTracker
+                            </h1>
+                            <p style={{color: '#64748B', fontSize: '14px'}}>
+                                {mode === 'login' && 'Welcome back! Sign in to continue'}
+                                {mode === 'register' && 'Create your secure account'}
+                                {mode === 'reset' && 'Reset your account data'}
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <div style={{marginBottom: '16px'}}>
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    className="input-field"
+                                    required
+                                    autoComplete="username"
+                                />
+                            </div>
+
+                            {mode === 'reset' && (
+                                <div style={{marginBottom: '16px'}}>
+                                    <input
+                                        type="text"
+                                        placeholder="Reset Code"
+                                        value={resetCode}
+                                        onChange={(e) => setResetCode(e.target.value)}
+                                        className="input-field"
+                                        required
+                                    />
+                                </div>
+                            )}
+
+                            <div style={{marginBottom: '16px'}}>
+                                <input
+                                    type="password"
+                                    placeholder={mode === 'reset' ? 'New Password' : 'Password'}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="input-field"
+                                    required
+                                    autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+                                />
+                            </div>
+
+                            <button type="submit" className="btn btn-primary" style={{width: '100%', marginBottom: '16px'}}>
+                                {mode === 'login' && '🔓 Sign In'}
+                                {mode === 'register' && '📝 Create Account'}
+                                {mode === 'reset' && '🔄 Reset Account'}
+                            </button>
+
+                            {message && (
+                                <div style={{
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    marginBottom: '16px',
+                                    backgroundColor: message.includes('successful') || message.includes('created') ? '#D1FAE5' : '#FEE2E2',
+                                    color: message.includes('successful') || message.includes('created') ? '#065F46' : '#991B1B',
+                                    fontSize: '14px',
+                                    whiteSpace: 'pre-line'
+                                }}>
+                                    {message}
+                                </div>
+                            )}
+
+                            <div style={{textAlign: 'center', fontSize: '14px'}}>
+                                {mode === 'login' && (
+                                    <>
+                                        <button type="button" onClick={() => setMode('register')} style={{color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer', marginRight: '16px'}}>
+                                            Create Account
+                                        </button>
+                                        <button type="button" onClick={() => setMode('reset')} style={{color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer'}}>
+                                            Reset Account
+                                        </button>
+                                    </>
+                                )}
+                                {mode !== 'login' && (
+                                    <button type="button" onClick={() => setMode('login')} style={{color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer'}}>
+                                        Back to Login
+                                    </button>
+                                )}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const SmartFinancialTracker = () => {
+            const [currentUser, setCurrentUser] = useState(null);
+            const [notificationService] = useState(() => new SmartNotificationService());
+            const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+            
+            // Initialize user state
+            useEffect(() => {
+                const user = UserManager.getCurrentUser();
+                setCurrentUser(user);
+                
+                if (user && notificationService.isSupported && Notification.permission === 'default') {
+                    setShowNotificationPrompt(true);
+                }
+            }, [notificationService.isSupported]);
+
+            // User-specific data with proper persistence
+            const getUserKey = (key) => currentUser ? `${key}_${currentUser}` : key;
+            
+            const [currentBalance, setCurrentBalance] = useState(() => {
+                return DataManager.load(getUserKey('currentBalance'), 93700);
+            });
+            
+            const [transactions, setTransactions] = useState(() => {
+                return DataManager.load(getUserKey('transactions'), []);
+            });
+            
+            const [budgetLimits] = useState({
+                essentials: 51535,
+                discretionary: 18740,
+                debt: 20000,
+                emergency: 3425
+            });
+            
+            const [spent, setSpent] = useState(() => {
+                return DataManager.load(getUserKey('spent'), {
+                    essentials: 0,
+                    discretionary: 0,
+                    debt: 0,
+                    emergency: 0
+                });
+            });
+            
+            const [debtCycleData, setDebtCycleData] = useState(() => {
+                return DataManager.load(getUserKey('debtCycleData'), {
+                    totalOwed: 50000,
+                    lastPayment: 0,
+                    friendWithdrawals: 0,
+                    netReduction: 0,
+                    cycleCount: 0
+                });
+            });
+            
+            const [newTransaction, setNewTransaction] = useState({
+                amount: '',
+                category: 'essentials',
+                description: '',
+                type: 'expense',
+                checkAmount: '',
+                friendWithdrawal: ''
+            });
+
+            // Enhanced data persistence - save immediately when data changes
+            useEffect(() => {
+                if (!currentUser) return;
+                
+                DataManager.save(getUserKey('currentBalance'), currentBalance);
+                DataManager.save(getUserKey('transactions'), transactions);
+                DataManager.save(getUserKey('spent'), spent);
+                DataManager.save(getUserKey('debtCycleData'), debtCycleData);
+            }, [currentUser, currentBalance, transactions, spent, debtCycleData]);
+
+            const handleLogin = (username) => {
+                setCurrentUser(username);
+                
+                // Load user-specific data
+                setCurrentBalance(DataManager.load(`currentBalance_${username}`, 93700));
+                setTransactions(DataManager.load(`transactions_${username}`, []));
+                setSpent(DataManager.load(`spent_${username}`, {
+                    essentials: 0,
+                    discretionary: 0,
+                    debt: 0,
+                    emergency: 0
+                }));
+                setDebtCycleData(DataManager.load(`debtCycleData_${username}`, {
+                    totalOwed: 50000,
+                    lastPayment: 0,
+                    friendWithdrawals: 0,
+                    netReduction: 0,
+                    cycleCount: 0
+                }));
+                
+                if (notificationService.isSupported && Notification.permission === 'default') {
+                    setShowNotificationPrompt(true);
+                }
+            };
+
+            const handleLogout = () => {
+                UserManager.logout();
+                setCurrentUser(null);
+                setShowNotificationPrompt(false);
+            };
+
+            const enableNotifications = async () => {
+                const granted = await notificationService.requestPermission();
+                setShowNotificationPrompt(false);
+                
+                if (granted) {
+                    notificationService.showNotification(
+                        'Great! You\'ll now receive smart reminders to help you stay on track with your financial goals. 🎉',
+                        'general'
+                    );
+                } else {
+                    notificationService.showFallbackNotification(
+                        'Notifications will appear as popups on this page instead.',
+                        'general'
+                    );
+                }
+            };
+
+            // If no user is logged in, show login screen
+            if (!currentUser) {
+                return <LoginScreen onLogin={handleLogin} />;
+            }
+
+            const getRemainingBudget = (category) => {
+                return Math.max(0, budgetLimits[category] - spent[category]);
+            };
+
+            const getPercentageUsed = (category) => {
+                return Math.min(100, (spent[category] / budgetLimits[category]) * 100);
+            };
+
+            const addTransaction = () => {
+                if (!newTransaction.amount || !newTransaction.description) {
+                    alert('Please enter both amount and description');
+                    return;
+                }
+                
+                const amount = parseFloat(newTransaction.amount);
+                const transaction = {
+                    id: Date.now(),
+                    amount: amount,
+                    category: newTransaction.category,
+                    description: newTransaction.description,
+                    type: newTransaction.type,
+                    date: new Date().toLocaleDateString('en-IN'),
+                    timestamp: new Date().toISOString()
+                };
+
+                const newTransactions = [transaction, ...transactions];
+                setTransactions(newTransactions);
+                
+                if (transaction.type === 'expense') {
+                    const newSpent = {
+                        ...spent,
+                        [transaction.category]: spent[transaction.category] + transaction.amount
+                    };
+                    setSpent(newSpent);
+                    setCurrentBalance(prev => prev - transaction.amount);
+                } else {
+                    setCurrentBalance(prev => prev + transaction.amount);
+                }
+
+                setNewTransaction({
+                    ...newTransaction,
+                    amount: '',
+                    description: ''
+                });
+            };
+
+            const deleteTransaction = (transactionId) => {
+                const transaction = transactions.find(t => t.id === transactionId);
+                if (!transaction) return;
+
+                const newTransactions = transactions.filter(t => t.id !== transactionId);
+                setTransactions(newTransactions);
+                
+                if (transaction.type === 'expense') {
+                    const newSpent = {
+                        ...spent,
+                        [transaction.category]: Math.max(0, spent[transaction.category] - transaction.amount)
+                    };
+                    setSpent(newSpent);
+                    setCurrentBalance(prev => prev + transaction.amount);
+                } else {
+                    setCurrentBalance(prev => prev - transaction.amount);
+                }
+            };
+
+            const recordDebtPayment = () => {
+                const amount = parseFloat(newTransaction.amount);
+                if (!amount) {
+                    alert('Please enter payment amount');
+                    return;
+                }
+
+                const newDebtData = {
+                    ...debtCycleData,
+                    lastPayment: amount,
+                    totalOwed: Math.max(0, debtCycleData.totalOwed - amount),
+                    netReduction: debtCycleData.netReduction + amount,
+                    cycleCount: debtCycleData.cycleCount + 1
+                };
+                setDebtCycleData(newDebtData);
+                
+                const transaction = {
+                    id: Date.now(),
+                    amount: amount,
+                    category: 'debt',
+                    description: 'Debt payment to friend',
+                    type: 'expense',
+                    date: new Date().toLocaleDateString('en-IN'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                setTransactions([transaction, ...transactions]);
+                const newSpent = {
+                    ...spent,
+                    debt: spent.debt + amount
+                };
+                setSpent(newSpent);
+                setCurrentBalance(prev => prev - amount);
+                
+                notificationService.showNotification(
+                    `Great job! You paid ₹${amount.toLocaleString()} towards debt. Keep breaking that cycle! 💪`,
+                    'debt'
+                );
+                
+                setNewTransaction({...newTransaction, amount: ''});
+            };
+
+            const recordFriendWithdrawal = () => {
+                const amount = parseFloat(newTransaction.friendWithdrawal);
+                if (!amount) {
+                    alert('Please enter withdrawal amount');
+                    return;
+                }
+
+                const newDebtData = {
+                    ...debtCycleData,
+                    friendWithdrawals: debtCycleData.friendWithdrawals + amount,
+                    totalOwed: debtCycleData.totalOwed + amount,
+                    netReduction: debtCycleData.netReduction - amount
+                };
+                setDebtCycleData(newDebtData);
+
+                const transaction = {
+                    id: Date.now(),
+                    amount: amount,
+                    category: 'debt',
+                    description: 'Friend withdrew from credit card',
+                    type: 'expense',
+                    date: new Date().toLocaleDateString('en-IN'),
+                    timestamp: new Date().toISOString()
+                };
+                
+                setTransactions([transaction, ...transactions]);
+                
+                notificationService.showNotification(
+                    `Warning: Friend withdrew ₹${amount.toLocaleString()}. This increases your debt! Focus on breaking this cycle.`,
+                    'debt'
+                );
+                
+                setNewTransaction({...newTransaction, friendWithdrawal: ''});
+            };
+
+            const shouldIBuyAnalysis = (amount) => {
+                if (!amount || amount <= 0) return null;
+                
+                const remainingDiscretionary = getRemainingBudget('discretionary');
+                const dailyDiscretionary = budgetLimits.discretionary / 30;
+                
+                let decision = 'safe';
+                let message = '';
+                let color = 'green';
+                let icon = '✅';
+                
+                if (amount > 500) {
+                    decision = 'warning';
+                    message = '⚠️ 24-Hour Rule: Wait before purchasing items over ₹500';
+                    color = 'orange';
+                } else if (amount > remainingDiscretionary) {
+                    decision = 'danger';
+                    message = `🚫 Exceeds remaining budget by ₹${(amount - remainingDiscretionary).toLocaleString()}`;
+                    color = 'red';
+                } else if (amount > dailyDiscretionary * 3) {
+                    decision = 'caution';
+                    message = `⚡ Large purchase: ${Math.round(amount / dailyDiscretionary)} days of budget`;
+                    color = 'yellow';
+                } else {
+                    decision = 'safe';
+                    message = `✅ Safe purchase. Remaining: ₹${(remainingDiscretionary - amount).toLocaleString()}`;
+                    color = 'green';
+                }
+
+                return { decision, message, color };
+            };
+
+            const monthsToFreedom = debtCycleData.totalOwed > 0 ? Math.ceil(debtCycleData.totalOwed / 15000) : 0;
+
+            return (
+                <div className="mobile-container">
+                    {/* Notification Permission Prompt */}
+                    {showNotificationPrompt && (
+                        <div className="notification-banner">
+                            <div style={{fontSize: '14px', fontWeight: 'bold', marginBottom: '4px'}}>
+                                🔔 Enable Smart Notifications
+                            </div>
+                            <div style={{fontSize: '12px', marginBottom: '8px'}}>
+                                Get reminders and alerts to stay on track
+                            </div>
+                            <div style={{display: 'flex', gap: '8px'}}>
+                                <button 
+                                    onClick={enableNotifications}
+                                    style={{padding: '6px 12px', background: 'white', color: '#667eea', borderRadius: '4px', border: 'none', fontSize: '12px', fontWeight: 'bold'}}
+                                >
+                                    Enable
+                                </button>
+                                <button 
+                                    onClick={() => setShowNotificationPrompt(false)}
+                                    style={{padding: '6px 12px', background: 'rgba(255,255,255,0.2)', color: 'white', borderRadius: '4px', border: 'none', fontSize: '12px'}}
+                                >
+                                    Later
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Header */}
+                    <div style={{textAlign: 'center', marginBottom: '16px', paddingTop: showNotificationPrompt ? '80px' : '16px'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+                            <h1 style={{fontSize: '24px', fontWeight: 'bold', color: '#1D4ED8', margin: 0}}>
+                                💰 Smart FinTracker
+                            </h1>
+                            <button onClick={handleLogout} className="btn btn-danger" style={{padding: '8px 12px', fontSize: '14px'}}>
+                                Logout
+                            </button>
+                        </div>
+                        <p style={{color: '#64748B', fontSize: '14px', margin: 0}}>
+                            Welcome {currentUser}! Break debt cycles • Track spending • Build wealth
+                        </p>
+                    </div>
+
+                    {/* Current Balance */}
+                    <div className="card">
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px'}}>
+                            <span style={{fontSize: '20px'}}>💰</span>
+                            <h2 style={{fontSize: '18px', fontWeight: 'bold', color: '#1D4ED8', margin: 0}}>Current Balance</h2>
+                        </div>
+                        <div style={{fontSize: '32px', fontWeight: 'bold', color: '#1D4ED8'}}>
+                            ₹{currentBalance.toLocaleString()}
+                        </div>
+                        <p style={{color: '#64748B', fontSize: '14px', margin: '4px 0 0 0'}}>Available this month</p>
+                    </div>
+
+                    {/* Debt Cycle Tracker */}
+                    <div className="card" style={{border: '2px solid #EF4444', background: 'linear-gradient(to right, #FEE2E2, #FED7C8)'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
+                            <span style={{fontSize: '20px'}}>🚨</span>
+                            <h2 style={{fontSize: '16px', fontWeight: 'bold', color: '#991B1B', margin: 0}}>
+                                DEBT CYCLE TRACKER
+                            </h2>
+                        </div>
+                        
+                        <div className="mobile-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginBottom: '12px'}}>
+                            <div style={{textAlign: 'center', padding: '12px', background: '#FEE2E2', borderRadius: '8px'}}>
+                                <div style={{fontSize: '24px', fontWeight: 'bold', color: '#DC2626'}}>₹{debtCycleData.totalOwed.toLocaleString()}</div>
+                                <div style={{fontSize: '12px', color: '#64748B'}}>Total Owed</div>
+                            </div>
+                            <div style={{textAlign: 'center', padding: '12px', background: '#DBEAFE', borderRadius: '8px'}}>
+                                <div style={{fontSize: '24px', fontWeight: 'bold', color: '#1D4ED8'}}>₹{debtCycleData.lastPayment.toLocaleString()}</div>
+                                <div style={{fontSize: '12px', color: '#64748B'}}>Last Payment</div>
+                            </div>
+                            <div style={{textAlign: 'center', padding: '12px', background: '#FED7C8', borderRadius: '8px'}}>
+                                <div style={{fontSize: '24px', fontWeight: 'bold', color: '#EA580C'}}>₹{debtCycleData.friendWithdrawals.toLocaleString()}</div>
+                                <div style={{fontSize: '12px', color: '#64748B'}}>Friend Withdrawals</div>
+                            </div>
+                            <div style={{textAlign: 'center', padding: '12px', background: debtCycleData.netReduction >= 0 ? '#D1FAE5' : '#FEE2E2', borderRadius: '8px'}}>
+                                <div style={{fontSize: '24px', fontWeight: 'bold', color: debtCycleData.netReduction >= 0 ? '#059669' : '#DC2626'}}>
+                                    ₹{debtCycleData.netReduction.toLocaleString()}
+                                </div>
+                                <div style={{fontSize: '12px', color: '#64748B'}}>Net Progress</div>
+                            </div>
+                        </div>
+
+                        <div style={{padding: '12px', background: debtCycleData.netReduction >= 0 ? '#D1FAE5' : '#FEE2E2', borderRadius: '8px', marginBottom: '12px'}}>
+                            <div style={{fontWeight: 'bold', fontSize: '14px', marginBottom: '4px'}}>
+                                📊 Analysis: {monthsToFreedom > 0 ? `${monthsToFreedom} months to freedom` : '🎉 DEBT FREE!'}
+                            </div>
+                            <div style={{fontSize: '12px', color: '#64748B'}}>
+                                Cycles: {debtCycleData.cycleCount} | Status: {debtCycleData.netReduction >= 0 ? '✅ Reducing' : '❌ Increasing'}
+                            </div>
+                        </div>
+
+                        <div className="mobile-input-grid" style={{display: 'grid', gap: '8px'}}>
+                            <div style={{display: 'flex', gap: '8px'}}>
+                                <input
+                                    type="number"
+                                    placeholder="Payment amount"
+                                    value={newTransaction.amount}
+                                    className="input-field"
+                                    style={{flex: 1}}
+                                    onChange={(e) => setNewTransaction(prev => ({...prev, amount: e.target.value}))}
+                                />
+                                <button
+                                    onClick={recordDebtPayment}
+                                    className="btn btn-success"
+                                    style={{padding: '12px 16px'}}
+                                >
+                                    Pay Debt
+                                </button>
+                            </div>
+                            
+                            <div style={{display: 'flex', gap: '8px'}}>
+                                <input
+                                    type="number"
+                                    placeholder="Friend withdrawal"
+                                    value={newTransaction.friendWithdrawal}
+                                    className="input-field"
+                                    style={{flex: 1}}
+                                    onChange={(e) => setNewTransaction(prev => ({...prev, friendWithdrawal: e.target.value}))}
+                                />
+                                <button
+                                    onClick={recordFriendWithdrawal}
+                                    className="btn btn-danger"
+                                    style={{padding: '12px 16px'}}
+                                >
+                                    Record Withdrawal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Budget Overview */}
+                    <div className="mobile-grid" style={{display: 'grid', gap: '8px', marginBottom: '16px'}}>
+                        {Object.entries(budgetLimits).map(([category, limit]) => {
+                            const percentage = getPercentageUsed(category);
+                            const remaining = getRemainingBudget(category);
+                            
+                            return (
+                                <div key={category} className="budget-card" style={{
+                                    borderColor: percentage >= 90 ? '#EF4444' : percentage >= 75 ? '#F59E0B' : percentage >= 50 ? '#EAB308' : '#10B981',
+                                    background: percentage >= 90 ? '#FEE2E2' : percentage >= 75 ? '#FEF3C7' : percentage >= 50 ? '#FEF9C3' : '#D1FAE5'
+                                }}>
+                                    <div style={{fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
+                                        {category === 'essentials' ? '🏠' :
+                                         category === 'discretionary' ? '🎯' :
+                                         category === 'debt' ? '💳' : '🛡️'}
+                                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                                    </div>
+                                    
+                                    <div style={{marginBottom: '8px'}}>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                                            <span>Spent:</span>
+                                            <span style={{fontWeight: 'bold'}}>₹{spent[category].toLocaleString()}</span>
+                                        </div>
+                                        <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '14px'}}>
+                                            <span>Remaining:</span>
+                                            <span style={{fontWeight: 'bold', color: '#059669'}}>₹{remaining.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style={{width: '100%', height: '8px', background: '#E5E7EB', borderRadius: '4px', overflow: 'hidden', marginBottom: '8px'}}>
+                                        <div
+                                            style={{
+                                                height: '100%',
+                                                width: `${Math.min(percentage, 100)}%`,
+                                                background: percentage >= 90 ? '#EF4444' : percentage >= 75 ? '#F59E0B' : percentage >= 50 ? '#EAB308' : '#10B981',
+                                                transition: 'width 0.3s ease'
+                                            }}
+                                        ></div>
+                                    </div>
+                                    
+                                    <div style={{textAlign: 'center', fontSize: '12px', fontWeight: 'bold'}}>
+                                        {percentage.toFixed(1)}% used
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Smart Should I Buy */}
+                    <div className="card" style={{border: '2px solid #8B5CF6', background: 'linear-gradient(to right, #F3E8FF, #E0E7FF)'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
+                            <span style={{fontSize: '20px'}}>🤔</span>
+                            <h2 style={{fontSize: '16px', fontWeight: 'bold', color: '#6B21A8', margin: 0}}>Smart Purchase Decision</h2>
+                        </div>
+                        
+                        <input
+                            type="number"
+                            placeholder="Enter amount you want to spend"
+                            value={newTransaction.checkAmount}
+                            onChange={(e) => setNewTransaction(prev => ({...prev, checkAmount: e.target.value}))}
+                            className="input-field"
+                            style={{marginBottom: '12px'}}
+                        />
+                        
+                        {newTransaction.checkAmount && (() => {
+                            const analysis = shouldIBuyAnalysis(parseFloat(newTransaction.checkAmount));
+                            if (!analysis) return null;
+                            
+                            return (
+                                <div style={{
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    background: analysis.color === 'red' ? '#FEE2E2' : 
+                                               analysis.color === 'yellow' ? '#FEF3C7' : 
+                                               analysis.color === 'orange' ? '#FED7C8' : '#D1FAE5',
+                                    border: `1px solid ${analysis.color === 'red' ? '#EF4444' : 
+                                                        analysis.color === 'yellow' ? '#F59E0B' : 
+                                                        analysis.color === 'orange' ? '#EA580C' : '#10B981'}`
+                                }}>
+                                    <div style={{fontWeight: 'bold', fontSize: '14px', marginBottom: '4px'}}>
+                                        {analysis.message}
+                                    </div>
+                                </div>
+                            );
+                        })()}
+                    </div>
+
+                    {/* Add Transaction */}
+                    <div className="card" style={{border: '2px solid #10B981', background: 'linear-gradient(to right, #D1FAE5, #A7F3D0)'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
+                            <span style={{fontSize: '20px'}}>➕</span>
+                            <h2 style={{fontSize: '16px', fontWeight: 'bold', color: '#065F46', margin: 0}}>Add Transaction</h2>
+                        </div>
+                        
+                        <div className="mobile-input-grid" style={{display: 'grid', gap: '8px'}}>
+                            <input
+                                type="number"
+                                placeholder="Amount"
+                                value={newTransaction.amount}
+                                onChange={(e) => setNewTransaction(prev => ({...prev, amount: e.target.value}))}
+                                className="input-field"
+                            />
+                            <select
+                                value={newTransaction.category}
+                                onChange={(e) => setNewTransaction(prev => ({...prev, category: e.target.value}))}
+                                className="input-field"
+                            >
+                                <option value="essentials">🏠 Essentials</option>
+                                <option value="discretionary">🎯 Discretionary</option>
+                                <option value="debt">💳 Debt Payment</option>
+                                <option value="emergency">🛡️ Emergency Fund</option>
+                            </select>
+                            <select
+                                value={newTransaction.type}
+                                onChange={(e) => setNewTransaction(prev => ({...prev, type: e.target.value}))}
+                                className="input-field"
+                            >
+                                <option value="expense">💸 Expense</option>
+                                <option value="income">💰 Income</option>
+                            </select>
+                            <input
+                                type="text"
+                                placeholder="Description"
+                                value={newTransaction.description}
+                                onChange={(e) => setNewTransaction(prev => ({...prev, description: e.target.value}))}
+                                className="input-field"
+                            />
+                            <button
+                                onClick={addTransaction}
+                                className="btn btn-primary"
+                            >
+                                Add Transaction
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Recent Transactions */}
+                    <div className="card">
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px'}}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                <span style={{fontSize: '20px'}}>📋</span>
+                                <h2 style={{fontSize: '16px', fontWeight: 'bold', color: '#374151', margin: 0}}>Recent Transactions</h2>
+                            </div>
+                            <span style={{fontSize: '12px', color: '#64748B'}}>
+                                {transactions.length} total
+                            </span>
+                        </div>
+                        
+                        <div style={{maxHeight: '300px', overflowY: 'auto'}}>
+                            {transactions.length === 0 ? (
+                                <div style={{textAlign: 'center', padding: '24px', color: '#64748B'}}>
+                                    <div style={{fontSize: '24px', marginBottom: '8px'}}>💭</div>
+                                    <p style={{fontSize: '14px', margin: 0}}>No transactions yet. Add your first transaction above!</p>
+                                </div>
+                            ) : (
+                                transactions.slice(0, 20).map((transaction) => (
+                                    <div key={transaction.id} className="transaction-item">
+                                        <div style={{flex: 1}}>
+                                            <div style={{fontWeight: 'bold', fontSize: '14px', marginBottom: '2px'}}>{transaction.description}</div>
+                                            <div style={{fontSize: '12px', color: '#64748B'}}>
+                                                {transaction.category} • {transaction.date}
+                                            </div>
+                                        </div>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                            <div style={{
+                                                fontWeight: 'bold', 
+                                                fontSize: '16px',
+                                                color: transaction.type === 'expense' ? '#EF4444' : '#10B981'
+                                            }}>
+                                                {transaction.type === 'expense' ? '-' : '+'}₹{transaction.amount.toLocaleString()}
+                                            </div>
+                                            <button
+                                                onClick={() => deleteTransaction(transaction.id)}
+                                                style={{
+                                                    background: 'none',
+                                                    border: 'none',
+                                                    color: '#EF4444',
+                                                    cursor: 'pointer',
+                                                    padding: '4px',
+                                                    borderRadius: '4px',
+                                                    fontSize: '14px'
+                                                }}
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<SmartFinancialTracker />, document.getElementById('root'));
+    </script>
+
+    <!-- Enhanced Service Worker for better PWA functionality -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('data:application/javascript;base64,Y29uc3QgQ0FDSEVfTkFNRSA9ICdzbWFydC1maW5hbmNpYWwtdHJhY2tlci12Mic7CmNvbnN0IHVybHNUb0NhY2hlID0gWwogICcvJywKICAnL2luZGV4Lmh0bWwnCl07CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZpY2UgV29ya2VyOiBJbnN0YWxsaW5nJyk7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkKICAgICAgLnRoZW4oY2FjaGUgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdTZXJ2aWNlIFdvcmtlcjogQ2FjaGluZyBhcHAgc2hlbGwnKTsKICAgICAgICByZXR1cm4gY2FjaGUuYWRkQWxsKHVybHNUb0NhY2hlKTsKICAgICAgfSkKICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignYWN0aXZhdGUnLCBldmVudCA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZpY2UgV29ya2VyOiBBY3RpdmF0aW5nJyk7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLmtleXMoKS50aGVuKGNhY2hlTmFtZXMgPT4gewogICAgICByZXR1cm4gUHJvbWlzZS5hbGwoCiAgICAgICAgY2FjaGVOYW1lcy5tYXAoY2FjaGVOYW1lID0+IHsKICAgICAgICAgIGlmIChjYWNoZU5hbWUgIT09IENBQ0hFX05BTUUpIHsKICAgICAgICAgICAgY29uc29sZS5sb2coJ1NlcnZpY2UgV29ya2VyOiBDbGVhcmluZyBvbGQgY2FjaGUnLCBjYWNoZU5hbWUpOwogICAgICAgICAgICByZXR1cm4gY2FjaGVzLmRlbGV0ZShjYWNoZU5hbWUpOwogICAgICAgICAgfQogICAgICAgIH0pCiAgICAgICk7CiAgICB9KQogICk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQogICAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgaWYgKHJlc3BvbnNlKSB7CiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7CiAgICAgICAgfQogICAgICAgIHJldHVybiBmZXRjaChldmVudC5yZXF1ZXN0KTsKICAgICAgfSkKICApOwp9KTs=')
+                    .then(registration => {
+                        console.log('Service Worker: Registered successfully');
+                    })
+                    .catch(error => {
+                        console.log('Service Worker: Registration failed');
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
